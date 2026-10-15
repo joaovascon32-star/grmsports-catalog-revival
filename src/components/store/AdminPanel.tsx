@@ -301,7 +301,9 @@ export const AdminPanel: React.FC = () => {
                               checked={s.inStock}
                               onChange={(e) => {
                                 const newSizes = [...editingProduct.sizes];
-                                newSizes[idx].inStock = e.target.checked;
+                                const current = newSizes[idx];
+                                if (!current) return;
+                                newSizes[idx] = { ...current, inStock: e.target.checked };
                                 setEditingProduct({ ...editingProduct, sizes: newSizes });
                               }}
                             />
@@ -313,7 +315,9 @@ export const AdminPanel: React.FC = () => {
                             value={s.stockCount}
                             onChange={(e) => {
                               const newSizes = [...editingProduct.sizes];
-                              newSizes[idx].stockCount = parseInt(e.target.value) || 0;
+                              const current = newSizes[idx];
+                              if (!current) return;
+                              newSizes[idx] = { ...current, stockCount: parseInt(e.target.value) || 0 };
                               setEditingProduct({ ...editingProduct, sizes: newSizes });
                             }}
                             className="w-full bg-secondary border border-border rounded px-1.5 py-1 text-center font-sans text-xs"

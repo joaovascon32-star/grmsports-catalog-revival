@@ -11,8 +11,7 @@ export const Route = createFileRoute('/')({
     { property: 'og:description', content: 'Seu time. Sua história. Encontre seu próximo manto na GRM Sports.' },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { property: 'og:image', content: banner.url },
-    { name: 'twitter:image', content: banner.url },
+    ...(banner.url.startsWith('https://') ? [{ property: 'og:image', content: banner.url }, { name: 'twitter:image', content: banner.url }] : []),
   ] }),
   component: Index,
 });

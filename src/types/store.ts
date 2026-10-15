@@ -38,15 +38,15 @@ export interface Product {
   category: ProductCategory;
   version: ProductVersion;
   price: number;
-  compareAtPrice?: number;
+  compareAtPrice?: number | undefined;
   images: string[];
   description: string;
   composition: string;
   sizes: SizeStock[];
   customizable: boolean;
-  patchOptions?: PatchOption[];
-  featured?: boolean;
-  badge?: string;
+  patchOptions?: PatchOption[] | undefined;
+  featured?: boolean | undefined;
+  badge?: string | undefined;
   season: string;
 }
 
@@ -62,7 +62,7 @@ export interface CartItem {
   product: Product;
   selectedSize: JerseySize;
   quantity: number;
-  customization?: CustomizationData;
+  customization?: CustomizationData | undefined;
   selectedPatches: PatchOption[];
   unitTotal: number;
 }
@@ -91,7 +91,7 @@ export interface OrderCustomer {
   cep: string;
   street: string;
   number: string;
-  complement?: string;
+  complement?: string | undefined;
   district: string;
   city: string;
   state: string;
@@ -110,5 +110,5 @@ export interface StoreOrder {
   total: number;
   paymentMethod: 'whatsapp' | 'pix' | 'credit_card';
   status: 'Pendente' | 'Confirmado' | 'Em Preparação' | 'Enviado' | 'Entregue' | 'Cancelado';
-  notes?: string;
+  notes?: string | undefined;
 }

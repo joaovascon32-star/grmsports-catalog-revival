@@ -90,17 +90,17 @@ export const CheckoutModal: React.FC = () => {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    if (!customer.name.trim()) errors.name = 'Nome é obrigatório.';
+    if (!customer.name.trim()) errors['name'] = 'Nome é obrigatório.';
     if (!customer.phone.trim() || customer.phone.replace(/\D/g, '').length < 10) {
-      errors.phone = 'Informe o WhatsApp com DDD.';
+      errors['phone'] = 'Informe o WhatsApp com DDD.';
     }
     if (!customer.cep.trim() || customer.cep.replace(/\D/g, '').length < 8) {
-      errors.cep = 'CEP obrigatório.';
+      errors['cep'] = 'CEP obrigatório.';
     }
-    if (!customer.street.trim()) errors.street = 'Rua obrigatória.';
-    if (!customer.number.trim()) errors.number = 'Número obrigatório.';
-    if (!customer.district.trim()) errors.district = 'Bairro obrigatório.';
-    if (!customer.city.trim()) errors.city = 'Cidade obrigatória.';
+    if (!customer.street.trim()) errors['street'] = 'Rua obrigatória.';
+    if (!customer.number.trim()) errors['number'] = 'Número obrigatório.';
+    if (!customer.district.trim()) errors['district'] = 'Bairro obrigatório.';
+    if (!customer.city.trim()) errors['city'] = 'Cidade obrigatória.';
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -185,7 +185,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.name && <p className="text-xs text-foreground mt-1">{formErrors.name}</p>}
+                    {formErrors['name'] && <p className="text-xs text-foreground mt-1">{formErrors['name']}</p>}
                   </div>
 
                   <div>
@@ -197,7 +197,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.phone && <p className="text-xs text-foreground mt-1">{formErrors.phone}</p>}
+                    {formErrors['phone'] && <p className="text-xs text-foreground mt-1">{formErrors['phone']}</p>}
                   </div>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => handleCepChange(e.target.value)}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground font-sans placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.cep && <p className="text-xs text-foreground mt-1">{formErrors.cep}</p>}
+                    {formErrors['cep'] && <p className="text-xs text-foreground mt-1">{formErrors['cep']}</p>}
                   </div>
 
                   <div className="sm:col-span-2">
@@ -232,7 +232,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, street: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.street && <p className="text-xs text-foreground mt-1">{formErrors.street}</p>}
+                    {formErrors['street'] && <p className="text-xs text-foreground mt-1">{formErrors['street']}</p>}
                   </div>
 
                   <div>
@@ -244,7 +244,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, number: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.number && <p className="text-xs text-foreground mt-1">{formErrors.number}</p>}
+                    {formErrors['number'] && <p className="text-xs text-foreground mt-1">{formErrors['number']}</p>}
                   </div>
 
                   <div>
@@ -267,7 +267,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, district: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.district && <p className="text-xs text-foreground mt-1">{formErrors.district}</p>}
+                    {formErrors['district'] && <p className="text-xs text-foreground mt-1">{formErrors['district']}</p>}
                   </div>
 
                   <div>
@@ -279,7 +279,7 @@ export const CheckoutModal: React.FC = () => {
                       onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
                       className="w-full bg-background border border-border rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                     />
-                    {formErrors.city && <p className="text-xs text-foreground mt-1">{formErrors.city}</p>}
+                    {formErrors['city'] && <p className="text-xs text-foreground mt-1">{formErrors['city']}</p>}
                   </div>
 
                   <div>
