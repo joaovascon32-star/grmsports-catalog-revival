@@ -1,0 +1,470 @@
+import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
+import { useStore } from '@/context/StoreContext';
+import { Product, JerseySize, PatchOption } from '@/types/store';
+import { 
+  X, 
+  ShoppingBag, 
+  MessageCircle, 
+  Ruler, 
+  Truck, 
+  ShieldCheck, 
+  Check, 
+  Sparkles,
+  Info
+} from 'lucide-react';
+
+interface ProductModalContentProps {
+  product: Product;
+}
+
+const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) => {
+  const { 
+    closeProductModal, 
+    addToCart, 
+    setIsSizeGuideOpen, 
+    settings,
+    generateWhatsAppLink 
+  } = useStore();
+
+  // Selected state
+  const [selectedSize, setSelectedSize] = useState<JerseySize>(() => {
+    const firstInStock = product.sizes.find(s => s.inStock);
+    return firstInStock ? firstInStock.size : 'M';
+  });
+
+  const [hasCustomization, setHasCustomization] = useState(false);
+  const [customName, setCustomName] = useState('');
+  const [customNumber, setCustomNumber] = useState('');
+  const [selectedPatches, setSelectedPatches] = useState<PatchOption[]>([]);
+  
+  // Shipping Simulation
+  const [cepInput, setCepInput] = useState('');
+  const [shippingResult, setShippingResult] = useState<{
+    calculated: boolean;
+    pacDays?: string;
+    pacPrice?: number;
+    sedexDays?: string;
+    sedexPrice?: number;
+  } | null>(null);
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // Error validation
+  const [sizeError, setSizeError] = useState('');
+
+  // Price calculations
+  const basePrice = product.price;
+  const customizationFee = hasCustomization ? 20 : 0;
+  const patchesFee = selectedPatches.reduce((acc, p) => acc + p.price, 0);
+  const totalUnitPrice = basePrice + customizationFee + patchesFee;
+  const installmentValue = (totalUnitPrice / 3).toFixed(2).replace('.', ',');
+  const pixPrice = (totalUnitPrice * 0.95).toFixed(2).replace('.', ',');
+
+  const handlePatchToggle = (patch: PatchOption) => {
+    setSelectedPatches(prev => {
+      const exists = prev.some(p => p.id === patch.id);
+      if (exists) {
+        return prev.filter(p => p.id !== patch.id);
+      } else {
+        return [...prev, patch];
+      }
+    });
+  };
+
+  const handleSimulateShipping = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanCep = cepInput.replace(/\D/g, '');
+    if (cleanCep.length !== 8) {
+      alert('Por favor, informe um CEP válido com 8 dígitos.');
+      return;
+    }
+    setShippingResult({
+      calculated: true,
+      pacDays: '5 a 8 dias úteis',
+      pacPrice: totalUnitPrice >= settings.freeShippingMin ? 0 : settings.shippingStandardRate,
+      sedexDays: '2 a 4 dias úteis',
+      sedexPrice: settings.shippingExpressRate,
+    });
+  };
+
+  const handleAddToCart = () => {
+    const sizeObj = product.sizes.find(s => s.size === selectedSize);
+    if (!sizeObj || !sizeObj.inStock) {
+      setSizeError('Por favor selecione um tamanho com estoque disponível.');
+      return;
+    }
+
+    addToCart(
+      product,
+      selectedSize,
+      hasCustomization ? {
+        hasCustomization: true,
+        name: customName.trim().toUpperCase() || 'SEM NOME',
+        number: customNumber.trim() || '10',
+        price: 20
+      } : undefined,
+      selectedPatches,
+      1
+    );
+
+    closeProductModal();
+  };
+
+  const handleDirectWhatsApp = () => {
+    const sizeObj = product.sizes.find(s => s.size === selectedSize);
+    if (!sizeObj || !sizeObj.inStock) {
+      setSizeError('Por favor selecione um tamanho disponível.');
+      return;
+    }
+
+    let customDetails = '';
+    if (hasCustomization) {
+      customDetails = `\n✍️ *Personalização:* ${customName.toUpperCase() || 'N/A'} #${customNumber || 'N/A'} (+R$ 20,00)`;
+    }
+    if (selectedPatches.length > 0) {
+      customDetails += `\n🏷️ *Patches:* ${selectedPatches.map(p => p.name).join(', ')}`;
+    }
+
+    const message = `Olá ${settings.storeName}! Gostaria de pedir este manto:\n\n` +
+      `👕 *${product.name}*\n` +
+      `📏 Tamanho: *${selectedSize}*\n` +
+      `💰 Valor Unitário: R$ ${totalUnitPrice.toFixed(2).replace('.', ',')}` +
+      `${customDetails}\n\n` +
+      `Como posso prosseguir com o pagamento e envio? Obrigado!`;
+
+    const link = generateWhatsAppLink(undefined, undefined, message);
+    window.open(link, '_blank');
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-secondary backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-200">
+      <div 
+        className="relative w-full max-w-4xl bg-secondary border border-border rounded-lg  overflow-hidden my-auto text-foreground"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Modal Button */}
+        <Button variant="ghost"
+          onClick={closeProductModal}
+          className="absolute top-3.5 right-3.5 z-20 p-2 rounded-full bg-secondary hover:bg-accent text-foreground hover:text-primary border border-border transition-colors"
+          aria-label="Fechar detalhes"
+        >
+          <X className="w-5 h-5" />
+        </Button>
+
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Left Column: Gallery & Live Jersey Preview */}
+          <div className="relative bg-background p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border">
+            <div className="relative aspect-[4/3] w-full max-w-md rounded-md overflow-hidden bg-secondary border border-border ">
+              <img
+                src={product.images[selectedImageIndex] || product.images[0]}
+                alt={product.name}
+                className="w-full h-full object-cover object-center transition-all duration-300"
+                referrerPolicy="no-referrer"
+              />
+
+              {product.badge && (
+                <div className="absolute top-3 left-3 bg-secondary border border-border text-foreground text-xs font-sans uppercase font-black  px-2.5 py-1 rounded ">
+                  {product.badge}
+                </div>
+              )}
+            </div>
+
+            {/* Gallery Thumbnails Carousel */}
+            {product.images && product.images.length > 1 && (
+              <div className="mt-3 flex items-center justify-center gap-2 overflow-x-auto max-w-md w-full py-1">
+                {product.images.map((img, idx) => (
+                  <Button variant="ghost"
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+                      selectedImageIndex === idx 
+                        ? 'border-border ring-2 ring-ring scale-105' 
+                        : 'border-border hover:border-primary opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img 
+                      src={img} 
+                      alt={`Foto ${idx + 1}`} 
+                      className="w-full h-full object-cover" 
+                      referrerPolicy="no-referrer"
+                    />
+                  </Button>
+                ))}
+              </div>
+            )}
+
+            {/* Live Customization Back Preview */}
+            {hasCustomization && (customName || customNumber) && (
+              <div className="mt-4 w-full max-w-md bg-gradient-   border border-border rounded-md p-4 text-center">
+                <div className="text-xs font-sans uppercase  text-foreground font-semibold mb-2 flex items-center justify-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Prévia da Estampa Oficial (Costas)</span>
+                </div>
+                <div className="py-4 px-6 bg-secondary rounded-lg border border-border flex flex-col items-center justify-center min-h-[90px]">
+                  <span className="font-display text-2xl font-black uppercase  text-foreground drop-">
+                    {customName.trim().toUpperCase() || 'SEU NOME'}
+                  </span>
+                  <span className="font-display text-5xl font-black text-foreground  leading-none mt-1 drop-">
+                    {customNumber.trim() || '10'}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-4 flex items-center gap-3 text-xs text-foreground">
+              <ShieldCheck className="w-4 h-4 text-foreground shrink-0" />
+              <span>Garantia de 7 dias para trocas e qualidade tailandesa 1:1</span>
+            </div>
+          </div>
+
+          {/* Right Column: PDP Purchase Module */}
+          <div className="p-6 sm:p-7 flex flex-col max-h-[85vh] overflow-y-auto bg-background">
+            {/* Club & League unboxed text */}
+            <div className="flex items-center gap-2 text-xs font-sans uppercase  text-foreground font-semibold mb-1">
+              <span>{product.club}</span>
+              <span aria-hidden="true">·</span>
+              <span>{product.league}</span>
+              <span aria-hidden="true">·</span>
+              <span>{product.season}</span>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-tight mb-3">
+              {product.name}
+            </h2>
+
+            {/* Price Box */}
+            <div className="p-3.5 rounded-md bg-background border border-border mb-5">
+              <div className="flex items-baseline gap-3">
+                <span className="font-sans text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums">
+                  R$ {totalUnitPrice.toFixed(2).replace('.', ',')}
+                </span>
+                {product.compareAtPrice && (
+                  <span className="font-sans text-sm text-foreground line-through tabular-nums">
+                    R$ {(product.compareAtPrice + customizationFee + patchesFee).toFixed(2).replace('.', ',')}
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-foreground mt-1">
+                <span>ou 3x de </span>
+                <strong className="text-foreground font-sans">R$ {installmentValue}</strong>
+                <span> sem juros no cartão</span>
+              </div>
+              <div className="text-xs text-foreground font-medium mt-0.5">
+                <span>R$ {pixPrice} no PIX (5% de desconto automático)</span>
+              </div>
+            </div>
+
+            {/* Size Selector */}
+            <div className="mb-5">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold uppercase  text-foreground">
+                  Tamanho Selecionado: <span className="text-foreground">{selectedSize}</span>
+                </label>
+                <Button variant="ghost"
+                  type="button"
+                  onClick={() => setIsSizeGuideOpen(true)}
+                  className="flex items-center gap-1 text-xs text-foreground hover:text-primary transition-colors"
+                >
+                  <Ruler className="w-3.5 h-3.5" />
+                  <span>Tabela de Medidas</span>
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-6 gap-2">
+                {product.sizes.map((s) => {
+                  const isSelected = selectedSize === s.size;
+                  return (
+                    <Button variant="ghost"
+                      key={s.size}
+                      type="button"
+                      disabled={!s.inStock}
+                      onClick={() => {
+                        setSelectedSize(s.size);
+                        setSizeError('');
+                      }}
+                      className={`relative py-2.5 text-xs font-sans font-bold rounded-lg border transition-all ${
+                        !s.inStock
+                          ? 'bg-secondary border-border text-foreground line-through cursor-not-allowed'
+                          : isSelected
+                            ? 'bg-secondary border-border text-foreground  ring-2 ring-ring'
+                            : 'bg-secondary border-border text-foreground hover:border-primary hover:text-primary'
+                      }`}
+                    >
+                      {s.size}
+                      {s.inStock && s.stockCount <= 5 && (
+                        <span className="absolute -top-1.5 -right-1 w-2 h-2 rounded-full bg-secondary" title="Poucas unidades" />
+                      )}
+                    </Button>
+                  );
+                })}
+              </div>
+              {sizeError && (
+                <p className="text-xs text-foreground mt-1.5 font-medium">{sizeError}</p>
+              )}
+            </div>
+
+            {/* Customization Module */}
+            {product.customizable && (
+              <div className="mb-5 p-3.5 rounded-md bg-secondary border border-border">
+                <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={hasCustomization}
+                    onChange={(e) => setHasCustomization(e.target.checked)}
+                    className="w-4 h-4 rounded border-border text-foreground focus:ring-ring focus:ring-offset-background"
+                  />
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-foreground">
+                      Personalizar com Nome e Número
+                    </span>
+                    <span className="text-xs text-foreground font-sans ml-2 font-bold">
+                      +R$ 20,00
+                    </span>
+                  </div>
+                </label>
+
+                {hasCustomization && (
+                  <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border">
+                    <div className="col-span-2">
+                      <label className="text-xs uppercase font-sans text-foreground block mb-1">
+                        Nome na Camisa (Ex: SILVA)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={14}
+                        placeholder="Ex: SEU NOME"
+                        value={customName}
+                        onChange={(e) => setCustomName(e.target.value.toUpperCase())}
+                        className="w-full bg-secondary border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground uppercase font-sans placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase font-sans text-foreground block mb-1">
+                        Número
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={3}
+                        placeholder="Ex: 10"
+                        value={customNumber}
+                        onChange={(e) => setCustomNumber(e.target.value.replace(/\D/g, ''))}
+                        className="w-full bg-secondary border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground font-sans placeholder:text-muted-foreground focus:outline-none focus:border-primary text-center"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Patches Selection */}
+            {product.patchOptions && product.patchOptions.length > 0 && (
+              <div className="mb-5">
+                <label className="text-xs font-bold uppercase  text-foreground block mb-2">
+                  Patches Oficiais de Competição
+                </label>
+                <div className="space-y-1.5">
+                  {product.patchOptions.map((patch) => {
+                    const isChecked = selectedPatches.some(p => p.id === patch.id);
+                    return (
+                      <Button variant="ghost"
+                        key={patch.id}
+                        type="button"
+                        onClick={() => handlePatchToggle(patch)}
+                        className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-colors ${
+                          isChecked 
+                            ? 'bg-secondary border-border text-foreground' 
+                            : 'bg-secondary border-border text-foreground hover:border-primary'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded flex items-center justify-center border ${isChecked ? 'bg-secondary border-border text-foreground' : 'border-border'}`}>
+                            {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                          </div>
+                          <span className="text-xs font-medium">{patch.name}</span>
+                        </div>
+                        <span className="font-sans text-xs font-bold text-foreground">
+                          +R$ {patch.price.toFixed(2).replace('.', ',')}
+                        </span>
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Description */}
+            <div className="mb-5 text-xs text-foreground leading-relaxed border-t border-border pt-3">
+              <p>{product.description}</p>
+              <p className="mt-2 text-foreground font-sans text-xs">{product.composition}</p>
+            </div>
+
+            {/* Shipping Calculator */}
+            <div className="mb-6 p-3 rounded-md bg-secondary border border-border">
+              <form onSubmit={handleSimulateShipping} className="flex gap-2 items-center">
+                <Truck className="w-4 h-4 text-foreground shrink-0" />
+                <input
+                  type="text"
+                  maxLength={9}
+                  placeholder="Informe seu CEP..."
+                  value={cepInput}
+                  onChange={(e) => setCepInput(e.target.value)}
+                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-none w-full font-sans"
+                />
+                <Button variant="ghost"
+                  type="submit"
+                  className="px-3 py-1.5 bg-secondary hover:bg-accent text-xs text-foreground rounded font-semibold shrink-0"
+                >
+                  Calcular
+                </Button>
+              </form>
+
+              {shippingResult && (
+                <div className="mt-2.5 pt-2 border-t border-border text-xs space-y-1">
+                  <div className="flex justify-between text-foreground">
+                    <span>PAC ({shippingResult.pacDays}):</span>
+                    <strong className="font-sans text-foreground">
+                      {shippingResult.pacPrice === 0 ? 'GRÁTIS' : `R$ ${shippingResult.pacPrice?.toFixed(2).replace('.', ',')}`}
+                    </strong>
+                  </div>
+                  <div className="flex justify-between text-foreground">
+                    <span>SEDEX Expresso ({shippingResult.sedexDays}):</span>
+                    <strong className="font-sans text-foreground">
+                      R$ {shippingResult.sedexPrice?.toFixed(2).replace('.', ',')}
+                    </strong>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Primary Action Buttons */}
+            <div className="mt-auto space-y-2.5 pt-2">
+              <Button variant="default"
+                onClick={handleAddToCart}
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-md bg-gradient-   hover: hover: text-foreground font-bold text-sm uppercase  transition-all  -600/30 active:scale-98"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>Adicionar à Sacola</span>
+              </Button>
+
+              <Button variant="ghost"
+                onClick={handleDirectWhatsApp}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md bg-secondary hover:bg-accent border border-border text-foreground font-semibold text-xs transition-colors"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Pedir este Manto via WhatsApp</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ProductModal: React.FC = () => {
+  const { activeProductModal } = useStore();
+  if (!activeProductModal) return null;
+  return <ProductModalContent key={activeProductModal.id} product={activeProductModal} />;
+};
