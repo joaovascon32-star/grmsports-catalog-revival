@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the native TanStack index route as the storefront entry and the store-specific UI under `src/components/store`; this preserves routing and separates retail presentation from state.
+- Preserve the imported browser-only, manual WhatsApp commerce model for visual redesigns; shared administration and hosted order persistence require a separate Cloud implementation.
+- Restore browser storage only after hydration, and gate persistence until restoration completes; this prevents mismatched rendering and lost cached carts.
+- Serve imported product media through asset pointers and keep the full source catalogue; this preserves real product identity without bundling binary images.

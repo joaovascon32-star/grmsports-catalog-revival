@@ -1,24 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router';
+import { StoreProvider } from '@/context/StoreContext';
+import { Storefront } from '@/components/store/Storefront';
+import banner from '@/assets/banner.asset.json';
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
+  head: () => ({ meta: [
+    { title: 'GRM Sports — Camisas de futebol' },
+    { name: 'description', content: 'Camisas dos principais clubes do Brasil e do mundo. Explore o catálogo GRM Sports, personalize seu manto e peça pelo WhatsApp.' },
+    { property: 'og:title', content: 'GRM Sports — Camisas de futebol' },
+    { property: 'og:description', content: 'Seu time. Sua história. Encontre seu próximo manto na GRM Sports.' },
+    { property: 'og:type', content: 'website' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { property: 'og:image', content: banner.url },
+    { name: 'twitter:image', content: banner.url },
+  ] }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+function Index() { return <StoreProvider><Storefront /></StoreProvider>; }
