@@ -1,0 +1,13 @@
+{
+  "source": "github-archive",
+  "capabilities": [
+    {"capability":"catalog code and bundled products","source":"src/data/initialCatalog.ts","outcome":"migrate","status":"in_progress","next_action":"Preserve all product records and images in the new catalogue"},
+    {"capability":"product options, cart, coupons and checkout","source":"React StoreContext and modals","outcome":"preserve","status":"in_progress","next_action":"Port browser interactions and verify an order"},
+    {"capability":"WhatsApp, Instagram and ViaCEP","source":"external links and browser address lookup","outcome":"preserve","status":"in_progress","next_action":"Verify destination and checkout address flow"},
+    {"capability":"payments","source":"manual PIX / card agreement via WhatsApp; no processor","outcome":"preserve","status":"in_progress","next_action":"Keep manual payment handoff; do not claim payment processing"},
+    {"capability":"local administration and orders","source":"browser localStorage only; no database or hosted authentication","outcome":"preserve frontend behavior","status":"in_progress","next_action":"Keep source functionality; hosted shared administration is outside this visual redesign"},
+    {"capability":"database, auth identities, roles, server endpoints, webhooks and schedules","source":"source inspection","outcome":"not detected","status":"verified","next_action":null},
+    {"capability":"cutover","source":"not published","outcome":"pending publication","status":"pending","next_action":"User publishes when ready"},
+    {"capability":"verification","source":"new preview","outcome":"verify","status":"pending","next_action":"Check catalogue, customizations, cart, checkout, desktop and mobile"}
+  ]
+}
