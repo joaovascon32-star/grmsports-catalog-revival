@@ -6,3 +6,5 @@
 - [x] Aviso "Foto em breve" para produto sem foto.
 - [x] Gerar ZIP do projeto para download.
 - [x] Revisar fotos dos 92 produtos (nítidas e consistentes).
+- [ ] Padronizar enquadramento das fotos sem cortes adicionais e verificar catálogo e galeria.
+- [ ] Preparar e revisar PDF de prévia do site para o cliente.
