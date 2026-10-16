@@ -118,7 +118,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const s = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       const c = localStorage.getItem(STORAGE_KEYS.CART);
       const o = localStorage.getItem(STORAGE_KEYS.ORDERS);
-      if (p) setProducts(JSON.parse(p));
+      if (p) {
+        const cached: Product[] = JSON.parse(p);
+        // Fill photos added to the source catalogue after the device cached it
+        setProducts(cached.map(cp => {
+          if (cp.images?.length) return cp;
+          const src = INITIAL_PRODUCTS.find(ip => ip.id === cp.id);
+          return src?.images?.length ? { ...cp, images: src.images } : cp;
+        }));
+      }
       if (s) setSettings({ ...INITIAL_SETTINGS, ...JSON.parse(s) });
       if (c) setCart(JSON.parse(c));
       if (o) setOrders(JSON.parse(o));
