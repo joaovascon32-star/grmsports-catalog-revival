@@ -204,10 +204,12 @@ button { cursor: pointer; }
 select option { background: var(--card); }
 .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 30px 22px; }
 .product-card { min-width: 0; }
-.product-photo { display: block; width: 100%; padding: 0; height: auto; aspect-ratio: 4/4.6; border-radius: 4px; position: relative; overflow: hidden; background: var(--image-surface); }
-.product-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
-.product-photo:hover img { transform: scale(1.035); }
-.product-badge { position: absolute; top: 12px; left: 12px; background: var(--background); color: var(--foreground); padding: 5px 8px; font-size: 10px; font-weight: 500; border-radius: 2px; }
+.product-photo { display: block; width: 100%; padding: 0; height: auto; aspect-ratio: 6/5; border-radius: 4px; position: relative; overflow: hidden; background: var(--image-surface); }
+.product-photo img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+.product-photo:hover { background: var(--image-surface); }
+.product-badge { position: absolute; bottom: 8px; right: 8px; background: var(--background); color: var(--foreground); padding: 5px 8px; font-size: 10px; font-weight: 500; border-radius: 2px; }
+.jersey-gallery { aspect-ratio: 6/5; background: var(--image-surface); }
+.jersey-image { width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .product-club { color: var(--muted-foreground); font-size: 10px; margin-top: 15px; text-transform: uppercase; }
 .product-name { font-size: 13px; font-weight: 500; margin-top: 5px; line-height: 1.6; }
 .product-price { display: flex; gap: 10px; align-items: center; margin-top: 9px; font-size: 14px; font-weight: 600; }
@@ -249,7 +251,7 @@ select option { background: var(--card); }
   .search-field { width: 100%; }
   .league-tabs { gap: 22px; }
   .product-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 26px 12px; }
-  .product-photo { aspect-ratio: 4/5; }
+  .product-photo { aspect-ratio: 6/5; }
   .product-price { gap: 6px; flex-wrap: wrap; }
   .product-name { font-size: 12px; }
   .product-list { grid-template-columns: 1fr; }

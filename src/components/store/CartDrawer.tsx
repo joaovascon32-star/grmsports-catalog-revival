@@ -124,11 +124,11 @@ export const CartDrawer: React.FC = () => {
                 className="flex gap-3.5 p-3 rounded-md bg-background border border-border relative group"
               >
                 {/* Thumbnail */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-secondary border border-border shrink-0">
+                <div className="w-20 h-20 rounded-md overflow-hidden bg-image-surface border border-border shrink-0">
                   <img
                     src={item.product.images[0]}
                     alt={item.product.name}
-                    className="w-full h-full object-cover object-center"
+                    className="jersey-image"
                     referrerPolicy="no-referrer"
                   />
                 </div>
