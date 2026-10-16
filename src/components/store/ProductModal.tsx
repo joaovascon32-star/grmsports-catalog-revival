@@ -155,16 +155,16 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left Column: Gallery & Live Jersey Preview */}
           <div className="relative bg-background p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border">
-            <div className="relative aspect-[4/3] w-full max-w-md rounded-md overflow-hidden bg-secondary border border-border ">
+            <div className="jersey-gallery relative w-full max-w-md rounded-md overflow-hidden border border-border">
               <img
                 src={product.images[selectedImageIndex] || product.images[0]}
                 alt={product.name}
-                className="w-full h-full object-cover object-center transition-all duration-300"
+                className="jersey-image"
                 referrerPolicy="no-referrer"
               />
 
               {product.badge && (
-                <div className="absolute top-3 left-3 bg-secondary border border-border text-foreground text-xs font-sans uppercase font-black  px-2.5 py-1 rounded ">
+                <div className="absolute bottom-3 right-3 bg-secondary border border-border text-foreground text-xs font-sans uppercase font-black  px-2.5 py-1 rounded ">
                   {product.badge}
                 </div>
               )}
@@ -178,7 +178,9 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+                    aria-label={`Ver foto ${idx + 1} de ${product.name}`}
+                    aria-pressed={selectedImageIndex === idx}
+                    className={`relative w-14 h-14 p-0 bg-image-surface rounded-md overflow-hidden border-2 transition-all shrink-0 ${
                       selectedImageIndex === idx 
                         ? 'border-border ring-2 ring-ring scale-105' 
                         : 'border-border hover:border-primary opacity-70 hover:opacity-100'
@@ -187,7 +189,7 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
                     <img 
                       src={img} 
                       alt={`Foto ${idx + 1}`} 
-                      className="w-full h-full object-cover" 
+                      className="jersey-image" 
                       referrerPolicy="no-referrer"
                     />
                   </Button>
