@@ -5,4 +5,4 @@
 - [x] Verificar compra e apresentação em telas grandes e pequenas.
 - [x] Aviso "Foto em breve" para produto sem foto.
 - [x] Gerar ZIP do projeto para download.
-- [ ] Revisar fotos dos 92 produtos (nítidas e consistentes).
+- [x] Revisar fotos dos 92 produtos (nítidas e consistentes).
