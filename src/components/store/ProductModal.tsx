@@ -4,7 +4,6 @@ import { useStore } from '@/context/StoreContext';
 import { Product, JerseySize, PatchOption } from '@/types/store';
 import { 
   X, 
-  ShoppingBag, 
   MessageCircle, 
   Ruler, 
   Truck, 
@@ -21,7 +20,6 @@ interface ProductModalContentProps {
 const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) => {
   const { 
     closeProductModal, 
-    addToCart, 
     setIsSizeGuideOpen, 
     settings,
     generateWhatsAppLink 
@@ -86,29 +84,6 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
       sedexDays: '2 a 4 dias úteis',
       sedexPrice: settings.shippingExpressRate,
     });
-  };
-
-  const handleAddToCart = () => {
-    const sizeObj = product.sizes.find(s => s.size === selectedSize);
-    if (!sizeObj || !sizeObj.inStock) {
-      setSizeError('Por favor selecione um tamanho com estoque disponível.');
-      return;
-    }
-
-    addToCart(
-      product,
-      selectedSize,
-      hasCustomization ? {
-        hasCustomization: true,
-        name: customName.trim().toUpperCase() || 'SEM NOME',
-        number: customNumber.trim() || '10',
-        price: 20
-      } : undefined,
-      selectedPatches,
-      1
-    );
-
-    closeProductModal();
   };
 
   const handleDirectWhatsApp = () => {
@@ -402,60 +377,20 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
               <p className="mt-2 text-foreground font-sans text-xs">{product.composition}</p>
             </div>
 
-            {/* Shipping Calculator */}
-            <div className="mb-6 p-3 rounded-md bg-secondary border border-border">
-              <form onSubmit={handleSimulateShipping} className="flex gap-2 items-center">
-                <Truck className="w-4 h-4 text-foreground shrink-0" />
-                <input
-                  type="text"
-                  maxLength={9}
-                  placeholder="Informe seu CEP..."
-                  value={cepInput}
-                  onChange={(e) => setCepInput(e.target.value)}
-                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-none w-full font-sans"
-                />
-                <Button variant="ghost"
-                  type="submit"
-                  className="px-3 py-1.5 bg-secondary hover:bg-accent text-xs text-foreground rounded font-semibold shrink-0"
-                >
-                  Calcular
-                </Button>
-              </form>
-
-              {shippingResult && (
-                <div className="mt-2.5 pt-2 border-t border-border text-xs space-y-1">
-                  <div className="flex justify-between text-foreground">
-                    <span>PAC ({shippingResult.pacDays}):</span>
-                    <strong className="font-sans text-foreground">
-                      {shippingResult.pacPrice === 0 ? 'GRÁTIS' : `R$ ${shippingResult.pacPrice?.toFixed(2).replace('.', ',')}`}
-                    </strong>
-                  </div>
-                  <div className="flex justify-between text-foreground">
-                    <span>SEDEX Expresso ({shippingResult.sedexDays}):</span>
-                    <strong className="font-sans text-foreground">
-                      R$ {shippingResult.sedexPrice?.toFixed(2).replace('.', ',')}
-                    </strong>
-                  </div>
-                </div>
-              )}
+            {/* Local delivery note */}
+            <div className="mb-6 p-3 rounded-md bg-secondary border border-border flex gap-2 items-start text-xs text-muted-foreground leading-5">
+              <Truck className="w-4 h-4 text-foreground shrink-0 mt-0.5" />
+              <span>Entregas apenas em <strong className="text-foreground">Cuiabá e Várzea Grande</strong>. Disponibilidade, entrega e pagamento são combinados pelo WhatsApp.</span>
             </div>
 
-            {/* Primary Action Buttons */}
-            <div className="mt-auto space-y-2.5 pt-2">
+            {/* Primary Action */}
+            <div className="mt-auto pt-2">
               <Button variant="default"
-                onClick={handleAddToCart}
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-md bg-gradient-   hover: hover: text-foreground font-bold text-sm uppercase  transition-all  -600/30 active:scale-98"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Adicionar à Sacola</span>
-              </Button>
-
-              <Button variant="ghost"
                 onClick={handleDirectWhatsApp}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-md bg-secondary hover:bg-accent border border-border text-foreground font-semibold text-xs transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-md font-bold text-sm uppercase"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>Pedir este Manto via WhatsApp</span>
+                <span>Pedir pelo WhatsApp</span>
               </Button>
             </div>
           </div>
