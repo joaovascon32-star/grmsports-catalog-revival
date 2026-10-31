@@ -6,8 +6,6 @@ import { useStore } from '@/context/StoreContext';
 import type { ProductCategory } from '@/types/store';
 import banner from '@/assets/banner.asset.json';
 import { ProductModal } from './ProductModal';
-import { CartDrawer } from './CartDrawer';
-import { CheckoutModal } from './CheckoutModal';
 import { SizeGuideModal } from './SizeGuideModal';
 import { AdminPanel } from './AdminPanel';
 
@@ -20,7 +18,7 @@ const money = (n: number) => n.toLocaleString('pt-BR', { style: 'currency', curr
 
 export function Storefront() {
   const store = useStore();
-  const { products, settings, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, sortBy, setSortBy, openProductModal, cartCount, setIsCartOpen, generateWhatsAppLink } = store;
+  const { products, settings, selectedCategory, setSelectedCategory, searchQuery, setSearchQuery, sortBy, setSortBy, openProductModal, generateWhatsAppLink } = store;
   const [menuOpen, setMenuOpen] = useState(false);
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [limit, setLimit] = useState(12);
@@ -42,15 +40,15 @@ export function Storefront() {
   const selectLeague = (id: ProductCategory) => { setSelectedCategory(id); setSearchQuery(''); setMenuOpen(false); scrollCatalogue(); };
   const faqs = [
     ['Posso personalizar minha camisa?', 'Sim. Adicione nome e número por R$ 20,00 na página do produto. Você também pode escolher os patches disponíveis.'],
-    ['Como funciona a entrega?', 'Enviamos para todo o Brasil. PAC: R$ 24,90, de 5 a 8 dias úteis. SEDEX: R$ 39,90, de 2 a 4 dias úteis. Frete grátis a partir de R$ 299. O envio será confirmado no WhatsApp.'],
-    ['Quais são as formas de pagamento?', 'PIX com 5% de desconto, cartão em até 3x sem juros ou pagamento combinado pelo WhatsApp. A disponibilidade e o pagamento são confirmados pela nossa equipe.'],
+    ['Como funciona a entrega?', 'No momento entregamos apenas em Cuiabá e Várzea Grande. Escolha sua camisa, clique em "Pedir pelo WhatsApp" e combinamos entrega e disponibilidade direto com você.'],
+    ['Como faço meu pedido?', 'O site é um catálogo. Toque na camisa, escolha o tamanho e clique em "Pedir pelo WhatsApp". O pedido e o pagamento são fechados na conversa com a nossa equipe.'],
   ];
   return <>
     <header className="border-b border-border">
       <div className="store-width store-header">
         <Button variant="ghost" onClick={() => { setSelectedCategory('inicio'); setSearchQuery(''); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="p-0 h-auto" aria-label="GRM Sports início"><div className="wordmark">GRM<span>SPORTS</span><span className="text-xs ml-1">®</span></div></Button>
         <nav className="store-nav" aria-label="Navegação principal"><Button variant="ghost" onClick={() => selectLeague('inicio')}>Catálogo</Button><Button variant="ghost" onClick={() => selectLeague('brasileirao')}>Brasileirão</Button><Button variant="ghost" onClick={() => selectLeague('premier_league')}>Clubes europeus</Button><Button variant="ghost" asChild><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer">Fale com a gente <ArrowRight /></a></Button></nav>
-        <div className="flex items-center gap-3"><Button variant="ghost" size="icon" asChild className="hidden sm:inline-flex" title="Instagram"><a href={settings.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram GRM Sports"><Instagram /></a></Button><Button variant="ghost" onClick={() => setIsCartOpen(true)} className="gap-2 px-1" aria-label="Abrir sacola de compras"><ShoppingBag /><span className="text-xs">Sacola ({cartCount})</span></Button><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}><Menu /></Button></div>
+        <div className="flex items-center gap-3"><Button variant="ghost" size="icon" asChild className="hidden sm:inline-flex" title="Instagram"><a href={settings.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram GRM Sports"><Instagram /></a></Button><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu" onClick={() => setMenuOpen(true)}><Menu /></Button></div>
       </div>
     </header>
     <section className="hero">
@@ -63,7 +61,7 @@ export function Storefront() {
       </motion.div>
     </section>
     <main className="store-width">
-      <div className="benefits"><span><Truck />Frete grátis a partir de R$ 299</span><span><Ruler />Personalize com seu nome e número</span><span><MessageCircle />Atendimento de quem entende de futebol</span></div>
+      <div className="benefits"><span><Truck />Entrega em Cuiabá e Várzea Grande</span><span><Ruler />Personalize com seu nome e número</span><span><MessageCircle />Pedido direto pelo WhatsApp</span></div>
       <section id="catalogo" className="scroll-mt-6">
         <div className="catalog-heading"><div><h2>Escolha seu manto.</h2><p>Dos gramados do Brasil aos grandes clubes do mundo.</p></div><label className="search-field"><Search size={17} /><input aria-label="Buscar clube ou camisa" placeholder="Busque seu time ou camisa" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />{searchQuery && <Button variant="ghost" size="icon" aria-label="Limpar busca" onClick={() => setSearchQuery('')}><X /></Button>}</label></div>
         <nav className="league-tabs" aria-label="Filtrar por liga">{leagues.map(l => <Button variant="ghost" key={l.id} aria-pressed={selectedCategory === l.id} onClick={() => { setSelectedCategory(l.id); setSearchQuery(''); }}>{l.name}</Button>)}</nav>
@@ -80,6 +78,6 @@ export function Storefront() {
     <footer className="store-footer"><div className="store-width footer-inner"><div><div className="wordmark mb-3">GRM<span>SPORTS</span></div><p>Futebol é parte de quem a gente é.</p></div><div className="footer-links"><a href={settings.instagramUrl} target="_blank" rel="noreferrer">{settings.instagram}</a><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer">WhatsApp <ArrowRight className="inline size-3" /></a><a href={`mailto:${settings.email}`}>E-mail</a></div><p>GRM Sports © {new Date().getFullYear()}</p></div></footer>
     <Button asChild className="floating-contact" title="Conversar no WhatsApp"><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer" aria-label="Conversar no WhatsApp"><MessageCircle /></a></Button>
     {menuOpen && <div className="fixed inset-0 z-50 bg-overlay"><div className="bg-background h-full w-full max-w-sm p-6"><div className="flex justify-between items-center mb-8"><span className="wordmark">GRM<span>SPORTS</span></span><Button variant="ghost" size="icon" aria-label="Fechar menu" onClick={() => setMenuOpen(false)}><X /></Button></div>{leagues.map(l => <Button key={l.id} variant="ghost" className="w-full justify-between rounded-none border-b border-border py-6" onClick={() => selectLeague(l.id)}>{l.name}<ArrowRight /></Button>)}<Button variant="link" asChild className="mt-6"><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer"><MessageCircle />Fale com a gente</a></Button></div></div>}
-    <ProductModal /><CartDrawer /><CheckoutModal /><SizeGuideModal /><AdminPanel />
+    <ProductModal /><SizeGuideModal /><AdminPanel />
   </>;
 }
