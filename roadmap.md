@@ -8,3 +8,6 @@
 - [x] Revisar fotos dos 92 produtos (nítidas e consistentes).
 - [x] Padronizar enquadramento das fotos sem cortes adicionais e verificar catálogo e galeria.
 - [x] Preparar e revisar PDF de prévia do site para o cliente.
+- [x] Transformar em catálogo: pedido só pelo WhatsApp, entrega Cuiabá e Várzea Grande.
+- [ ] Ampliar catálogo com clubes conhecidos e retrôs (aguardando PDF do fornecedor).
+- [ ] Nova proposta de preço parcelada no PDF (aguardando escolha).
