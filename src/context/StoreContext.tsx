@@ -127,7 +127,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           return src?.images?.length ? { ...cp, images: src.images } : cp;
         }));
       }
-      if (s) setSettings({ ...INITIAL_SETTINGS, ...JSON.parse(s) });
+      if (s) {
+        const cachedSettings = { ...INITIAL_SETTINGS, ...JSON.parse(s) };
+        // Devices that cached the previous destination keep reaching the current number
+        if (cachedSettings.whatsappNumber === '5565996637773') {
+          cachedSettings.whatsappNumber = INITIAL_SETTINGS.whatsappNumber;
+          cachedSettings.whatsappDisplay = INITIAL_SETTINGS.whatsappDisplay;
+        }
+        setSettings(cachedSettings);
+      }
       if (c) setCart(JSON.parse(c));
       if (o) setOrders(JSON.parse(o));
     } catch { /* damaged device cache falls back to source catalog */ }
