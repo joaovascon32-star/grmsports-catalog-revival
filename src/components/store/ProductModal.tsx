@@ -4,7 +4,6 @@ import { useStore } from '@/context/StoreContext';
 import { Product, JerseySize, PatchOption } from '@/types/store';
 import { 
   X, 
-  ShoppingBag, 
   MessageCircle, 
   Ruler, 
   Truck, 
@@ -21,7 +20,6 @@ interface ProductModalContentProps {
 const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) => {
   const { 
     closeProductModal, 
-    addToCart, 
     setIsSizeGuideOpen, 
     settings,
     generateWhatsAppLink 
@@ -86,29 +84,6 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
       sedexDays: '2 a 4 dias úteis',
       sedexPrice: settings.shippingExpressRate,
     });
-  };
-
-  const handleAddToCart = () => {
-    const sizeObj = product.sizes.find(s => s.size === selectedSize);
-    if (!sizeObj || !sizeObj.inStock) {
-      setSizeError('Por favor selecione um tamanho com estoque disponível.');
-      return;
-    }
-
-    addToCart(
-      product,
-      selectedSize,
-      hasCustomization ? {
-        hasCustomization: true,
-        name: customName.trim().toUpperCase() || 'SEM NOME',
-        number: customNumber.trim() || '10',
-        price: 20
-      } : undefined,
-      selectedPatches,
-      1
-    );
-
-    closeProductModal();
   };
 
   const handleDirectWhatsApp = () => {

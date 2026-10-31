@@ -12,7 +12,7 @@ export const INITIAL_SETTINGS: StoreSettings = {
   pixKey: 'grm.sports00@gmail.com',
   pixKeyType: 'E-mail',
   pixBeneficiary: 'GRM SPORTS | CAMISAS DE TIME',
-  announcement: '🔥 FRETE GRÁTIS PARA TODO O BRASIL NAS COMPRAS ACIMA DE R$ 299 | 5% OFF NO PIX | ATENDIMENTO WHATSAPP',
+  announcement: 'ENTREGAS EM CUIABÁ E VÁRZEA GRANDE | PEDIDOS PELO WHATSAPP',
   freeShippingMin: 299,
   shippingStandardRate: 24.90,
   shippingExpressRate: 39.90,

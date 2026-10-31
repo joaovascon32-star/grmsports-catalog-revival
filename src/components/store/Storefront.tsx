@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Search, ShoppingBag, Menu, X, Instagram, MessageCircle, Truck, Ruler, LayoutGrid, List, ChevronDown, RotateCcw } from 'lucide-react';
+import { ArrowRight, Search, Menu, X, Instagram, MessageCircle, Truck, Ruler, LayoutGrid, List, ChevronDown, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/context/StoreContext';
 import type { ProductCategory } from '@/types/store';
