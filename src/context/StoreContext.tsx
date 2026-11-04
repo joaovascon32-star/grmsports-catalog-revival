@@ -129,8 +129,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       if (s) {
         const cachedSettings = { ...INITIAL_SETTINGS, ...JSON.parse(s) };
-        // Devices that cached the previous destination keep reaching the current number
-        if (cachedSettings.whatsappNumber === '5565996637773') {
+        // Devices that cached a previous destination keep reaching the current number
+        const staleNumbers = ['5565996637773', '556599019551'];
+        if (staleNumbers.includes(cachedSettings.whatsappNumber) && cachedSettings.whatsappNumber !== INITIAL_SETTINGS.whatsappNumber) {
           cachedSettings.whatsappNumber = INITIAL_SETTINGS.whatsappNumber;
           cachedSettings.whatsappDisplay = INITIAL_SETTINGS.whatsappDisplay;
         }

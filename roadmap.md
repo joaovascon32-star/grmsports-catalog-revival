@@ -9,5 +9,6 @@
 - [x] Padronizar enquadramento das fotos sem cortes adicionais e verificar catálogo e galeria.
 - [x] Preparar e revisar PDF de prévia do site para o cliente.
 - [x] Transformar em catálogo: pedido só pelo WhatsApp, entrega Cuiabá e Várzea Grande.
+- [x] Definir contatos oficiais: WhatsApp +55 65 99663-7773, Instagram @grm.sportsbr, e-mail grm.sports00@gmail.com.
 - [ ] Ampliar catálogo com clubes conhecidos e retrôs (aguardando PDF do fornecedor).
 - [ ] Nova proposta de preço parcelada no PDF (aguardando escolha).
