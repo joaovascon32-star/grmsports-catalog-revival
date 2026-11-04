@@ -120,9 +120,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const o = localStorage.getItem(STORAGE_KEYS.ORDERS);
       if (p) {
         const cached: Product[] = JSON.parse(p);
-        // Fill photos added to the source catalogue after the device cached it
+        // Source catalogue photos (official order) always win over device-cached photos
         setProducts(cached.map(cp => {
-          if (cp.images?.length) return cp;
           const src = INITIAL_PRODUCTS.find(ip => ip.id === cp.id);
           return src?.images?.length ? { ...cp, images: src.images } : cp;
         }));
