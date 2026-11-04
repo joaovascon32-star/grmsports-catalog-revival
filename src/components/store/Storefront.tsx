@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Search, Menu, X, Instagram, MessageCircle, Truck, Ruler, LayoutGrid, List, ChevronDown, RotateCcw } from 'lucide-react';
+import { ArrowRight, Search, Menu, X, Instagram, MessageCircle, Truck, Ruler, LayoutGrid, List, ChevronDown, RotateCcw, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/context/StoreContext';
 import type { ProductCategory } from '@/types/store';
@@ -77,7 +77,7 @@ export function Storefront() {
     </main>
     <footer className="store-footer"><div className="store-width footer-inner"><div><div className="wordmark mb-3">GRM<span>SPORTS</span></div><p>Futebol é parte de quem a gente é.</p></div><div className="footer-links"><a href={settings.instagramUrl} target="_blank" rel="noreferrer">{settings.instagram}</a><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer">WhatsApp <ArrowRight className="inline size-3" /></a><a href={`mailto:${settings.email}`}>{settings.email}</a></div><p>GRM Sports © {new Date().getFullYear()}</p></div></footer>
     <Button asChild className="floating-contact" title="Conversar no WhatsApp"><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer" aria-label="Conversar no WhatsApp"><MessageCircle /></a></Button>
-    {menuOpen && <div className="fixed inset-0 z-50 bg-overlay"><div className="bg-background h-full w-full max-w-sm p-6"><div className="flex justify-between items-center mb-8"><span className="wordmark">GRM<span>SPORTS</span></span><Button variant="ghost" size="icon" aria-label="Fechar menu" onClick={() => setMenuOpen(false)}><X /></Button></div>{leagues.map(l => <Button key={l.id} variant="ghost" className="w-full justify-between rounded-none border-b border-border py-6" onClick={() => selectLeague(l.id)}>{l.name}<ArrowRight /></Button>)}<Button variant="link" asChild className="mt-6"><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer"><MessageCircle />Fale com a gente</a></Button></div></div>}
+    {menuOpen && <div className="fixed inset-0 z-50 bg-overlay"><div className="bg-background h-full w-full max-w-sm p-6"><div className="flex justify-between items-center mb-8"><span className="wordmark">GRM<span>SPORTS</span></span><Button variant="ghost" size="icon" aria-label="Fechar menu" onClick={() => setMenuOpen(false)}><X /></Button></div>{leagues.map(l => <Button key={l.id} variant="ghost" className="w-full justify-between rounded-none border-b border-border py-6" onClick={() => selectLeague(l.id)}>{l.name}<ArrowRight /></Button>)}<div className="mt-6 flex flex-col gap-3"><Button variant="link" asChild className="justify-start px-0"><a href={generateWhatsAppLink()} target="_blank" rel="noreferrer"><MessageCircle />Fale com a gente</a></Button><Button variant="link" asChild className="justify-start px-0"><a href={settings.instagramUrl} target="_blank" rel="noreferrer"><Instagram />{settings.instagram}</a></Button><Button variant="link" asChild className="justify-start px-0"><a href={`mailto:${settings.email}`}><Mail />{settings.email}</a></Button></div></div></div>}
     <ProductModal /><SizeGuideModal /><AdminPanel />
   </>;
 }
