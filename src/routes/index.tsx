@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { StoreProvider } from '@/context/StoreContext';
 import { Storefront } from '@/components/store/Storefront';
-import banner from '@/assets/banner.asset.json';
+const banner = { url: '/images/banners/grm-football-banner.jpg' };
 
 export const Route = createFileRoute('/')({
   head: () => ({ meta: [

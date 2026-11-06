@@ -1,4 +1,4 @@
-import fallbackAsset from '@/assets/leverkusen.asset.json';
+const fallbackAsset = { url: '/images/brand/grm-leverkusen.jpg' };
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 import { useStore } from '@/context/StoreContext';

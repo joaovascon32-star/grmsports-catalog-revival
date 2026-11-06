@@ -4,7 +4,7 @@ import { ArrowRight, Search, Menu, X, Instagram, MessageCircle, Truck, Ruler, La
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/context/StoreContext';
 import type { ProductCategory } from '@/types/store';
-import banner from '@/assets/banner.asset.json';
+const banner = { url: '/images/banners/grm-football-banner.jpg' };
 import { ProductModal } from './ProductModal';
 import { SizeGuideModal } from './SizeGuideModal';
 import { AdminPanel } from './AdminPanel';
