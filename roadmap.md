@@ -1,4 +1,6 @@
 # GRM Sports
+- [x] Auditar viabilidade de Cloudflare Pages sem alterar a configuração Workers.
+- [ ] Retirar seleção de personalização e patches, preservando catálogo e fotos.
 - [x] Portar catálogo completo e imagens do arquivo enviado.
 - [x] Aplicar visual natural e minimalista com animações discretas.
 - [x] Preservar busca, ligas, opções dos produtos, sacola e pedido via WhatsApp.
