@@ -6,7 +6,7 @@ const banner = { url: '/images/banners/grm-football-banner.jpg' };
 export const Route = createFileRoute('/')({
   head: () => ({ meta: [
     { title: 'GRM Sports — Camisas de futebol' },
-    { name: 'description', content: 'Camisas dos principais clubes do Brasil e do mundo. Explore o catálogo GRM Sports, personalize seu manto e peça pelo WhatsApp.' },
+    { name: 'description', content: 'Camisas dos principais clubes do Brasil e do mundo. Explore o catálogo GRM Sports, escolha sua camisa e peça pelo WhatsApp.' },
     { property: 'og:title', content: 'GRM Sports — Camisas de futebol' },
     { property: 'og:description', content: 'Seu time. Sua história. Encontre seu próximo manto na GRM Sports.' },
     { property: 'og:type', content: 'website' },

@@ -1,16 +1,13 @@
 import { Button } from '@/components/ui/button';
 import React, { useState } from 'react';
 import { useStore } from '@/context/StoreContext';
-import { Product, JerseySize, PatchOption } from '@/types/store';
+import { Product, JerseySize } from '@/types/store';
 import { 
   X, 
   MessageCircle, 
   Ruler, 
   Truck, 
   ShieldCheck, 
-  Check, 
-  Sparkles,
-  Info
 } from 'lucide-react';
 
 interface ProductModalContentProps {
@@ -31,21 +28,6 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
     return firstInStock ? firstInStock.size : 'M';
   });
 
-  const [hasCustomization, setHasCustomization] = useState(false);
-  const [customName, setCustomName] = useState('');
-  const [customNumber, setCustomNumber] = useState('');
-  const [selectedPatches, setSelectedPatches] = useState<PatchOption[]>([]);
-  
-  // Shipping Simulation
-  const [cepInput, setCepInput] = useState('');
-  const [shippingResult, setShippingResult] = useState<{
-    calculated: boolean;
-    pacDays?: string;
-    pacPrice?: number;
-    sedexDays?: string;
-    sedexPrice?: number;
-  } | null>(null);
-
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Error validation
@@ -53,38 +35,9 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
 
   // Price calculations
   const basePrice = product.price;
-  const customizationFee = hasCustomization ? 20 : 0;
-  const patchesFee = selectedPatches.reduce((acc, p) => acc + p.price, 0);
-  const totalUnitPrice = basePrice + customizationFee + patchesFee;
+  const totalUnitPrice = basePrice;
   const installmentValue = (totalUnitPrice / 3).toFixed(2).replace('.', ',');
   const pixPrice = (totalUnitPrice * 0.95).toFixed(2).replace('.', ',');
-
-  const handlePatchToggle = (patch: PatchOption) => {
-    setSelectedPatches(prev => {
-      const exists = prev.some(p => p.id === patch.id);
-      if (exists) {
-        return prev.filter(p => p.id !== patch.id);
-      } else {
-        return [...prev, patch];
-      }
-    });
-  };
-
-  const handleSimulateShipping = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanCep = cepInput.replace(/\D/g, '');
-    if (cleanCep.length !== 8) {
-      alert('Por favor, informe um CEP válido com 8 dígitos.');
-      return;
-    }
-    setShippingResult({
-      calculated: true,
-      pacDays: '5 a 8 dias úteis',
-      pacPrice: totalUnitPrice >= settings.freeShippingMin ? 0 : settings.shippingStandardRate,
-      sedexDays: '2 a 4 dias úteis',
-      sedexPrice: settings.shippingExpressRate,
-    });
-  };
 
   const handleDirectWhatsApp = () => {
     const sizeObj = product.sizes.find(s => s.size === selectedSize);
@@ -93,19 +46,11 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
       return;
     }
 
-    let customDetails = '';
-    if (hasCustomization) {
-      customDetails = `\n✍️ *Personalização:* ${customName.toUpperCase() || 'N/A'} #${customNumber || 'N/A'} (+R$ 20,00)`;
-    }
-    if (selectedPatches.length > 0) {
-      customDetails += `\n🏷️ *Patches:* ${selectedPatches.map(p => p.name).join(', ')}`;
-    }
-
     const message = `Olá ${settings.storeName}! Gostaria de pedir este manto:\n\n` +
       `👕 *${product.name}*\n` +
       `📏 Tamanho: *${selectedSize}*\n` +
       `💰 Valor Unitário: R$ ${totalUnitPrice.toFixed(2).replace('.', ',')}` +
-      `${customDetails}\n\n` +
+      `\n\n` +
       `Como posso prosseguir com o pagamento e envio? Obrigado!`;
 
     const link = generateWhatsAppLink(undefined, undefined, message);
@@ -172,24 +117,6 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
               </div>
             )}
 
-            {/* Live Customization Back Preview */}
-            {hasCustomization && (customName || customNumber) && (
-              <div className="mt-4 w-full max-w-md bg-gradient-   border border-border rounded-md p-4 text-center">
-                <div className="text-xs font-sans uppercase  text-foreground font-semibold mb-2 flex items-center justify-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Prévia da Estampa Oficial (Costas)</span>
-                </div>
-                <div className="py-4 px-6 bg-secondary rounded-lg border border-border flex flex-col items-center justify-center min-h-[90px]">
-                  <span className="font-display text-2xl font-black uppercase  text-foreground drop-">
-                    {customName.trim().toUpperCase() || 'SEU NOME'}
-                  </span>
-                  <span className="font-display text-5xl font-black text-foreground  leading-none mt-1 drop-">
-                    {customNumber.trim() || '10'}
-                  </span>
-                </div>
-              </div>
-            )}
-
             <div className="mt-4 flex items-center gap-3 text-xs text-foreground">
               <ShieldCheck className="w-4 h-4 text-foreground shrink-0" />
               <span>Garantia de 7 dias para trocas e qualidade tailandesa 1:1</span>
@@ -219,7 +146,7 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
                 </span>
                 {product.compareAtPrice && (
                   <span className="font-sans text-sm text-foreground line-through tabular-nums">
-                    R$ {(product.compareAtPrice + customizationFee + patchesFee).toFixed(2).replace('.', ',')}
+                    R$ {(product.compareAtPrice).toFixed(2).replace('.', ',')}
                   </span>
                 )}
               </div>
@@ -281,95 +208,6 @@ const ProductModalContent: React.FC<ProductModalContentProps> = ({ product }) =>
                 <p className="text-xs text-foreground mt-1.5 font-medium">{sizeError}</p>
               )}
             </div>
-
-            {/* Customization Module */}
-            {product.customizable && (
-              <div className="mb-5 p-3.5 rounded-md bg-secondary border border-border">
-                <label className="flex items-center gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={hasCustomization}
-                    onChange={(e) => setHasCustomization(e.target.checked)}
-                    className="w-4 h-4 rounded border-border text-foreground focus:ring-ring focus:ring-offset-background"
-                  />
-                  <div className="flex-1">
-                    <span className="text-xs font-bold text-foreground">
-                      Personalizar com Nome e Número
-                    </span>
-                    <span className="text-xs text-foreground font-sans ml-2 font-bold">
-                      +R$ 20,00
-                    </span>
-                  </div>
-                </label>
-
-                {hasCustomization && (
-                  <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border">
-                    <div className="col-span-2">
-                      <label className="text-xs uppercase font-sans text-foreground block mb-1">
-                        Nome na Camisa (Ex: SILVA)
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={14}
-                        placeholder="Ex: SEU NOME"
-                        value={customName}
-                        onChange={(e) => setCustomName(e.target.value.toUpperCase())}
-                        className="w-full bg-secondary border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground uppercase font-sans placeholder:text-muted-foreground focus:outline-none focus:border-primary"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase font-sans text-foreground block mb-1">
-                        Número
-                      </label>
-                      <input
-                        type="text"
-                        maxLength={3}
-                        placeholder="Ex: 10"
-                        value={customNumber}
-                        onChange={(e) => setCustomNumber(e.target.value.replace(/\D/g, ''))}
-                        className="w-full bg-secondary border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground font-sans placeholder:text-muted-foreground focus:outline-none focus:border-primary text-center"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Patches Selection */}
-            {product.patchOptions && product.patchOptions.length > 0 && (
-              <div className="mb-5">
-                <label className="text-xs font-bold uppercase  text-foreground block mb-2">
-                  Patches Oficiais de Competição
-                </label>
-                <div className="space-y-1.5">
-                  {product.patchOptions.map((patch) => {
-                    const isChecked = selectedPatches.some(p => p.id === patch.id);
-                    return (
-                      <Button variant="ghost"
-                        key={patch.id}
-                        type="button"
-                        onClick={() => handlePatchToggle(patch)}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-colors ${
-                          isChecked 
-                            ? 'bg-secondary border-border text-foreground' 
-                            : 'bg-secondary border-border text-foreground hover:border-primary'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className={`w-4 h-4 rounded flex items-center justify-center border ${isChecked ? 'bg-secondary border-border text-foreground' : 'border-border'}`}>
-                            {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className="text-xs font-medium">{patch.name}</span>
-                        </div>
-                        <span className="font-sans text-xs font-bold text-foreground">
-                          +R$ {patch.price.toFixed(2).replace('.', ',')}
-                        </span>
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* Description */}
             <div className="mb-5 text-xs text-foreground leading-relaxed border-t border-border pt-3">

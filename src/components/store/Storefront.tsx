@@ -39,7 +39,6 @@ export function Storefront() {
   const scrollCatalogue = () => document.getElementById('catalogo')?.scrollIntoView({ behavior: reduceMotion ? 'instant' : 'smooth' });
   const selectLeague = (id: ProductCategory) => { setSelectedCategory(id); setSearchQuery(''); setMenuOpen(false); scrollCatalogue(); };
   const faqs = [
-    ['Posso personalizar minha camisa?', 'Sim. Adicione nome e número por R$ 20,00 na página do produto. Você também pode escolher os patches disponíveis.'],
     ['Como funciona a entrega?', 'No momento entregamos apenas em Cuiabá e Várzea Grande. Escolha sua camisa, clique em "Pedir pelo WhatsApp" e combinamos entrega e disponibilidade direto com você.'],
     ['Como faço meu pedido?', 'O site é um catálogo. Toque na camisa, escolha o tamanho e clique em "Pedir pelo WhatsApp". O pedido e o pagamento são fechados na conversa com a nossa equipe.'],
   ];
@@ -61,7 +60,7 @@ export function Storefront() {
       </motion.div>
     </section>
     <main className="store-width">
-      <div className="benefits"><span><Truck />Entrega em Cuiabá e Várzea Grande</span><span><Ruler />Personalize com seu nome e número</span><span><MessageCircle />Pedido direto pelo WhatsApp</span></div>
+      <div className="benefits"><span><Truck />Entrega em Cuiabá e Várzea Grande</span><span><Ruler />Confira os tamanhos disponíveis</span><span><MessageCircle />Pedido direto pelo WhatsApp</span></div>
       <section id="catalogo" className="scroll-mt-6">
         <div className="catalog-heading"><div><h2>Escolha seu manto.</h2><p>Dos gramados do Brasil aos grandes clubes do mundo.</p></div><label className="search-field"><Search size={17} /><input aria-label="Buscar clube ou camisa" placeholder="Busque seu time ou camisa" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />{searchQuery && <Button variant="ghost" size="icon" aria-label="Limpar busca" onClick={() => setSearchQuery('')}><X /></Button>}</label></div>
         <nav className="league-tabs" aria-label="Filtrar por liga">{leagues.map(l => <Button variant="ghost" key={l.id} aria-pressed={selectedCategory === l.id} onClick={() => { setSelectedCategory(l.id); setSearchQuery(''); }}>{l.name}</Button>)}</nav>
